@@ -29,13 +29,11 @@ jobs:
         python3 setup.py bdist_wheel
         find .. -name \*.whl
 
-    - name: Upload the artifacts
-      uses: skx/github-action-publish-binaries@master
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      with:
-        args: '*.whl'
-
+    - name: Uploads numpy whl package
+        uses: actions/upload-artifact@v3
+        with:
+          name: numpy
+          path: dist/*.whl
 
 #    - name: Building pandas
 #      run: |

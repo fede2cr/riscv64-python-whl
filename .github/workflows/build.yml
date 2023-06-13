@@ -28,12 +28,14 @@ jobs:
         CCACHE_DIR=/mnt/ccache PATH=/usr/lib/ccache:$PATH python3 setup.py build -j 4
         python3 setup.py bdist_wheel
         find .. -name \*.whl
+        pwd
 
     - name: Uploads numpy whl package
       uses: actions/upload-artifact@v3
       with:
         name: numpy
-        path: *.whl
+        path: dist/*.whl
+        retention-days: 5
 
 #    - name: Building pandas
 #      run: |

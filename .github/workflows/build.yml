@@ -33,7 +33,6 @@ jobs:
     - name: Uploads numpy whl package
       uses: actions/upload-artifact@v3
       with:
-        name: numpy
         path: numpy/dist/*.whl
         retention-days: 5
 

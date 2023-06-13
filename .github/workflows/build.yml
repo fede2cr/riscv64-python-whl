@@ -27,7 +27,15 @@ jobs:
         pip install -r test_requirements.txt
         python3 setup.py build -j 4
         python3 setup.py bdist_wheel
-        find ..
+        find .. -name \*.whl
+
+      - name: Upload the artifacts
+        uses: skx/github-action-publish-binaries@master
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          args: '*.whl'
+
 
 #    - name: Building pandas
 #      run: |

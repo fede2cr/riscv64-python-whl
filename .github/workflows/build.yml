@@ -18,12 +18,14 @@ jobs:
 
     - name: Building numpy
       run: |
+        DEBIAN_FRONTEND=noninteractive sudo apt-get -qy install libopenblas0 libopenblas-dev gfortran
         python3 -m venv numpy-venv
         source numpy-venv/bin/activate
         git clone https://github.com/numpy/numpy.git # TODO, submodule
         cd numpy
         pip install -r test_requirements.txt
-        python3 setup.py bdist_wheel -j 4
+        python3 setup.py build -j 4
+        python3 setup.py bdist_wheel
         find ..
 
 #    - name: Building pandas

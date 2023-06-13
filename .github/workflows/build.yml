@@ -18,5 +18,10 @@ jobs:
 
     - name: Building pandas
       run: |
-        pip3 install --upgrade pip wheel setuptools
-        pip3 install pandas
+        python3 -m venv pandas-venv
+        source pandas-venv/bin/activate
+        pip3 install cython
+        git clone https://github.com/pandas-dev/pandas.git # TODO, submodule
+        cd pandas
+        python3 setup.py bdist_wheel
+        find ..

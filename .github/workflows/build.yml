@@ -13,8 +13,8 @@ jobs:
     steps:
     - name: Checkout
       uses: actions/checkout@v3
-      with:
-        ref: '2.0-stable'
+#      with:
+#        ref: '2.0-stable'
 
     - name: Install Remaining Prerequisites
       run: |

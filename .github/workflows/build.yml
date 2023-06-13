@@ -34,7 +34,7 @@ jobs:
       uses: actions/upload-artifact@v3
       with:
         name: numpy
-        path: dist/*.whl
+        path: numpy/dist/*.whl
         retention-days: 5
 
 #    - name: Building pandas

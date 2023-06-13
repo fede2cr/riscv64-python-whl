@@ -30,10 +30,10 @@ jobs:
         find .. -name \*.whl
 
     - name: Uploads numpy whl package
-        uses: actions/upload-artifact@v3
-        with:
-          name: numpy
-          path: dist/*.whl
+      uses: actions/upload-artifact@v3
+      with:
+        name: numpy
+        path: dist/*.whl
 
 #    - name: Building pandas
 #      run: |

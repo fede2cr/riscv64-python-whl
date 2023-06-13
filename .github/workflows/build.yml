@@ -17,5 +17,6 @@ jobs:
         DEBIAN_FRONTEND=noninteractive sudo apt-get -qy install python3-pip python3-setuptools
 
     - name: Building pandas
+      run: |
         pip3 install --upgrade pip wheel setuptools
         pip3 install pandas

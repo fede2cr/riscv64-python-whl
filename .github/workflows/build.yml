@@ -16,12 +16,22 @@ jobs:
         DEBIAN_FRONTEND=noninteractive sudo apt-get -qy update
         DEBIAN_FRONTEND=noninteractive sudo apt-get -qy install python3-pip python3-setuptools python3-wheel python3.11-venv
 
-    - name: Building pandas
+    - name: Building numpy
       run: |
-        python3 -m venv pandas-venv
-        source pandas-venv/bin/activate
-        pip3 install cython
-        git clone https://github.com/pandas-dev/pandas.git # TODO, submodule
-        cd pandas
-        python3 setup.py bdist_wheel
+        python3 -m venv numpys-venv
+        source numpy-venv/bin/activate
+        git clone https://github.com/numpy/numpy.git # TODO, submodule
+        cd numpy
+        pip install -r test_requirements.txt
+        python3 setup.py bdist_wheel -j 4
         find ..
+
+#    - name: Building pandas
+#      run: |
+#        python3 -m venv pandas-venv
+#        source pandas-venv/bin/activate
+#        pip3 install cython
+#        git clone https://github.com/pandas-dev/pandas.git # TODO, submodule
+#        cd pandas
+#        python3 setup.py bdist_wheel
+#        find ..

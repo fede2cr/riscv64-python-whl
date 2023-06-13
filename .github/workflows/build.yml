@@ -23,6 +23,7 @@ jobs:
         source numpy-venv/bin/activate
         git clone https://github.com/numpy/numpy.git # TODO, submodule
         cd numpy
+        git submodule update --init
         pip install -r test_requirements.txt
         python3 setup.py build -j 4
         python3 setup.py bdist_wheel

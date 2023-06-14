@@ -38,7 +38,7 @@ jobs:
       uses: actions/upload-artifact@v3
       with:
         #name: numpy
-        name: ${{ steps.numpy_name.outputs.stdout }}
+        name: filename${{ steps.numpy_name.outputs.stdout }}.whl
         path: numpy/dist/*.whl
         retention-days: 5
 

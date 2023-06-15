@@ -42,6 +42,29 @@ jobs:
         path: numpy/dist/*.whl
         retention-days: 5
 
+    - name: release
+      uses: actions/create-release@v1
+      id: create_release
+      with:
+        draft: false
+        prerelease: false
+        #release_name: ${{ steps.version.outputs.version }}
+        release_name: Weekly build
+        tag_name: ${{ github.ref }}
+        #body_path: CHANGELOG.md
+      env:
+        GITHUB_TOKEN: ${{ github.token }}
+
+    - name: upload numpy artifact
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ github.token }}
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }}
+        asset_path: ${{ steps.version.outputs.version }}
+        asset_name: ${{ steps.version.outputs.version }}
+        #asset_content_type: application/zip
+
 #    - name: Building pandas
 #      run: |
 #        python3 -m venv pandas-venv

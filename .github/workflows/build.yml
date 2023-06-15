@@ -64,7 +64,7 @@ jobs:
         upload_url: ${{ steps.create_release.outputs.upload_url }}
         asset_path: ${{ steps.version.outputs.version }}
         asset_name: ${{ steps.version.outputs.version }}
-        #asset_content_type: application/zip
+        asset_content_type: application/zip
 
 #    - name: Building pandas
 #      run: |

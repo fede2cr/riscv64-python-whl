@@ -43,7 +43,6 @@ jobs:
         retention-days: 5
 
     - name: release
-      permissions: write-all
       uses: actions/create-release@v1
       id: create_release
       with:

@@ -1,7 +1,7 @@
 on: [pull_request, push]
 #  workflow_dispatch:
 #  schedule:
-#    - cron: "0 0 * * *"
+#    - cron: "0 0 * * *" # TODO, after dev, enable once a week
 
 jobs:
   build:
@@ -32,19 +32,19 @@ jobs:
 
     - name: version
       run: echo "::set-output name=version::$( basename $(ls numpy/dist/*.whl) )"
-      id: version
-
-    - name: week of year
-      #run: echo "::set-output name=version::$( date +%V )"
-      run: echo "::set-output name=version::$( date +%s )"
-      id: week
+      id: numpy_version
 
     - name: Uploads numpy whl package
       uses: actions/upload-artifact@v3
       with:
-        name: ${{ steps.version.outputs.version }}
+        name: ${{ steps.numpy_version.outputs.version }}
         path: numpy/dist/*.whl
         retention-days: 5
+
+    - name: week of year
+      #run: echo "::set-output name=version::$( date +%Y%V )"
+      run: echo "::set-output name=week::$( date +%s )" # TODO, during dev
+      id: week
 
     - name: release
       uses: actions/create-release@v1
@@ -53,7 +53,7 @@ jobs:
         draft: false
         prerelease: false
         release_name: Weekly build ${{ steps.week.outputs.week }}
-        tag_name: 0.1${{ steps.week.outputs.week }}
+        tag_name: 0.${{ steps.week.outputs.week }}
         #body_path: CHANGELOG.md
       env:
         GITHUB_TOKEN: ${{ github.token }}
@@ -64,8 +64,8 @@ jobs:
         GITHUB_TOKEN: ${{ github.token }}
       with:
         upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: ${{ steps.version.outputs.version }}
-        asset_name: ${{ steps.version.outputs.version }}
+        asset_path: ./${{ steps.numpy_version.outputs.version }}
+        asset_name: ${{ steps.numpy_version.outputs.version }}
         asset_content_type: application/zip
 
 #    - name: Building pandas

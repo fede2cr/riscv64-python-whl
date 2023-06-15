@@ -33,12 +33,14 @@ jobs:
     - name: Get file name for artifact name
       id: name
       run: basename $(ls numpy/dist/*.whl)
-
+    - name: version
+      run: echo "::set-output name=version::$(ls numpy/dist/*.whl)"
+      id: version
     - name: Uploads numpy whl package
       uses: actions/upload-artifact@v3
       with:
         #name: numpy
-        name: filename${{ steps.name.outputs.name }}.whl
+        name: filename${{ steps.name.outputs.name }}${{ steps.version.outputs.version }}.whl
         path: numpy/dist/*.whl
         retention-days: 5
 

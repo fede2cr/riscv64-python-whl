@@ -50,7 +50,8 @@ jobs:
         prerelease: false
         #release_name: ${{ steps.version.outputs.version }}
         release_name: Weekly build
-        tag_name: ${{ github.ref }}
+        #tag_name: {{ github.ref }}
+        tag_name: riscv64
         #body_path: CHANGELOG.md
       env:
         GITHUB_TOKEN: ${{ github.token }}

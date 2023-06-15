@@ -31,14 +31,14 @@ jobs:
         pwd
 
     - name: Get file name for artifact name
-      id: numpy_name
+      id: name
       run: basename $(ls numpy/dist/*.whl)
 
     - name: Uploads numpy whl package
       uses: actions/upload-artifact@v3
       with:
         #name: numpy
-        name: filename${{ steps.numpy_name.outputs.stdout }}.whl
+        name: filename${{ steps.name.outputs.stdout }}.whl
         path: numpy/dist/*.whl
         retention-days: 5
 

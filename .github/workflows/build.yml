@@ -16,35 +16,34 @@ jobs:
         DEBIAN_FRONTEND=noninteractive sudo apt-get -qy update
         DEBIAN_FRONTEND=noninteractive sudo apt-get -qy install python3-pip python3-setuptools python3-wheel python3.11-venv
 
-    - name: Building numpy
-      run: |
-        DEBIAN_FRONTEND=noninteractive sudo apt-get -qy install libopenblas0 libopenblas-dev gfortran
-        python3 -m venv numpy-venv
-        source numpy-venv/bin/activate
-        git clone https://github.com/numpy/numpy.git # TODO, submodule
-        cd numpy
-        git submodule update --init
-        pip install -r test_requirements.txt
-        CCACHE_DIR=/mnt/ccache PATH=/usr/lib/ccache:$PATH python3 setup.py build -j 4
-        python3 setup.py bdist_wheel
-        find .. -name \*.whl
-        pwd
+#    - name: Building numpy
+#      run: |
+#        DEBIAN_FRONTEND=noninteractive sudo apt-get -qy install libopenblas0 libopenblas-dev gfortran
+#        python3 -m venv numpy-venv
+#        source numpy-venv/bin/activate
+#        git clone https://github.com/numpy/numpy.git # TODO, submodule
+#        cd numpy
+#        git submodule update --init
+#        pip install -r test_requirements.txt
+#        CCACHE_DIR=/mnt/ccache PATH=/usr/lib/ccache:$PATH python3 setup.py build -j 4
+#        python3 setup.py bdist_wheel
 
-    - name: Defines the numpy version from the whl file
-      run: echo "::set-output name=version::$( basename $(ls numpy/dist/*.whl) )"
-      id: numpy_version
+#    - name: Defines the numpy version from the whl file
+#      run: echo "::set-output name=version::$( basename $(ls numpy/dist/*.whl) )"
+#      id: numpy_version
 
-    - name: Uploads numpy whl package
-      uses: actions/upload-artifact@v3
-      with:
-        name: ${{ steps.numpy_version.outputs.version }}
-        path: numpy/dist/*.whl
-        retention-days: 5
+#    - name: Uploads numpy whl package
+#      uses: actions/upload-artifact@v3
+#      with:
+#        name: ${{ steps.numpy_version.outputs.version }}
+#        path: numpy/dist/*.whl
+#        retention-days: 5
 
     - name: Building cmake
       run: |
         git clone https://gitlab.kitware.com/cmake/cmake.git
         cd cmake
+        pip install virtualenvwrapper 
         mkvirtualenv build-cmake
         pip install -r requirements-dev.txt
         python setup.py bdist_wheel -j 4

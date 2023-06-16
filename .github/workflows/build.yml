@@ -55,7 +55,7 @@ jobs:
   release-whl:
   runs-on: self-hosted
   needs: build
-
+  steps:
     - name: Grab the week of year and the year for use in release version
       #run: echo "::set-output name=version::$( date +%Y%V )"
       run: echo "::set-output name=week::$( date +%s )" # TODO, during dev

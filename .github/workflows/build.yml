@@ -41,14 +41,14 @@ jobs:
         path: numpy/dist/*.whl
         retention-days: 5
 
-    -name: Building cmake
-     run: |
-       git clone https://gitlab.kitware.com/cmake/cmake.git
-       cd cmake
-       mkvirtualenv build-cmake
-       pip install -r requirements-dev.txt
-       python setup.py bdist_wheel -j 4
-       find ..
+    - name: Building cmake
+      run: |
+        git clone https://gitlab.kitware.com/cmake/cmake.git
+        cd cmake
+        mkvirtualenv build-cmake
+        pip install -r requirements-dev.txt
+        python setup.py bdist_wheel -j 4
+        find ..
 
 # Build ninja
 # git clone https://github.com/ninja-build/ninja.git

@@ -30,7 +30,7 @@ jobs:
         find .. -name \*.whl
         pwd
 
-    - name: version
+    - name: Defines the numpy version from the whl file
       run: echo "::set-output name=version::$( basename $(ls numpy/dist/*.whl) )"
       id: numpy_version
 
@@ -41,7 +41,22 @@ jobs:
         path: numpy/dist/*.whl
         retention-days: 5
 
-    - name: week of year
+#    - name: Building pandas
+#      run: |
+#        python3 -m venv pandas-venv
+#        source pandas-venv/bin/activate
+#        pip3 install cython
+#        git clone https://github.com/pandas-dev/pandas.git # TODO, submodule
+#        cd pandas
+#        python3 setup.py bdist_wheel
+#        find ..
+
+
+  release-whl:
+  runs-on: self-hosted
+  needs: build
+
+    - name: Grab the week of year and the year for use in release version
       #run: echo "::set-output name=version::$( date +%Y%V )"
       run: echo "::set-output name=week::$( date +%s )" # TODO, during dev
       id: week
@@ -58,7 +73,12 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ github.token }}
 
-    - name: upload numpy artifact
+    - name: Download numpy artifact
+      uses: actions/download-artifact@v2
+      with:
+        name: ${{ steps.numpy_version.outputs.version }}
+
+    - name: Upload numpy artifact
       uses: actions/upload-release-asset@v1
       env:
         GITHUB_TOKEN: ${{ github.token }}
@@ -68,12 +88,3 @@ jobs:
         asset_name: ${{ steps.numpy_version.outputs.version }}
         asset_content_type: application/zip
 
-#    - name: Building pandas
-#      run: |
-#        python3 -m venv pandas-venv
-#        source pandas-venv/bin/activate
-#        pip3 install cython
-#        git clone https://github.com/pandas-dev/pandas.git # TODO, submodule
-#        cd pandas
-#        python3 setup.py bdist_wheel
-#        find ..

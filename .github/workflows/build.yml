@@ -41,50 +41,67 @@ jobs:
         path: numpy/dist/*.whl
         retention-days: 5
 
+    -name: Building cmake
+     run: |
+       git clone https://gitlab.kitware.com/cmake/cmake.git
+       cd cmake
+       mkvirtualenv build-cmake
+       pip install -r requirements-dev.txt
+       python setup.py bdist_wheel -j 4
+       find ..
+
+# Build ninja
+# git clone https://github.com/ninja-build/ninja.git
+# cd ninja
+# ./configure.py --bootstrap
+# cmake -Bbuild-cmake
+# cmake --build build-cmake
+# python3 setup.py bdist_wheel
+
 #    - name: Building pandas
 #      run: |
+#        DEBIAN_FRONTEND=noninteractive sudo apt-get -qy install cmake libssl-dev
 #        python3 -m venv pandas-venv
 #        source pandas-venv/bin/activate
 #        pip3 install cython
 #        git clone https://github.com/pandas-dev/pandas.git # TODO, submodule
 #        cd pandas
+#        pip3 install https://github.com/fede2cr/riscv64-python-whl/releases/download/0.1686914859/numpy-1.25.0rc1+197.g410f7cc64-cp311-cp311-linux_riscv64.whl
+#         pip3 install -r requirements-dev.txt 
 #        python3 setup.py bdist_wheel
 #        find ..
 
 
-#  release-whl:
-#    runs-on: self-hosted
-#    needs: build
-#    steps:
-    - name: Grab the week of year and the year for use in release version
-      #run: echo "::set-output name=version::$( date +%Y%V )"
-      run: echo "::set-output name=week::$( date +%s )" # TODO, during dev
-      id: week
+# Disable during dev
+#    - name: Grab the week of year and the year for use in release version
+#      #run: echo "::set-output name=version::$( date +%Y%V )"
+#      run: echo "::set-output name=week::$( date +%s )" # TODO, during dev
+#      id: week
 
-    - name: release
-      uses: actions/create-release@v1
-      id: create_release
-      with:
-        draft: false
-        prerelease: false
-        release_name: Weekly build ${{ steps.week.outputs.week }}
-        tag_name: 0.${{ steps.week.outputs.week }}
-        #body_path: CHANGELOG.md
-      env:
-        GITHUB_TOKEN: ${{ github.token }}
+#    - name: release
+#      uses: actions/create-release@v1
+#      id: create_release
+#      with:
+#        draft: false
+#        prerelease: false
+#        release_name: Weekly build ${{ steps.week.outputs.week }}
+#        tag_name: 0.${{ steps.week.outputs.week }}
+#        #body_path: CHANGELOG.md
+#      env:
+#        GITHUB_TOKEN: ${{ github.token }}
 
-    - name: Download numpy artifact
-      uses: actions/download-artifact@v2
-      with:
-        name: ${{ steps.numpy_version.outputs.version }}
+#    - name: Download numpy artifact
+#      uses: actions/download-artifact@v2
+#      with:
+#        name: ${{ steps.numpy_version.outputs.version }}
 
-    - name: Upload numpy artifact
-      uses: actions/upload-release-asset@v1
-      env:
-        GITHUB_TOKEN: ${{ github.token }}
-      with:
-        upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: ./${{ steps.numpy_version.outputs.version }}
-        asset_name: ${{ steps.numpy_version.outputs.version }}
-        asset_content_type: application/zip
+#    - name: Upload numpy artifact
+#      uses: actions/upload-release-asset@v1
+#      env:
+#        GITHUB_TOKEN: ${{ github.token }}
+#      with:
+#        upload_url: ${{ steps.create_release.outputs.upload_url }}
+#        asset_path: ./${{ steps.numpy_version.outputs.version }}
+#        asset_name: ${{ steps.numpy_version.outputs.version }}
+#        asset_content_type: application/zip
 

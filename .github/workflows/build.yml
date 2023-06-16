@@ -43,8 +43,8 @@ jobs:
       run: |
         git clone https://gitlab.kitware.com/cmake/cmake.git
         cd cmake
-        pip install virtualenvwrapper 
-        mkvirtualenv build-cmake
+        python3 -m venv cmake-venv
+        source cmake-venv/bin/activate
         pip install -r requirements-dev.txt
         python setup.py bdist_wheel -j 4
         find ..

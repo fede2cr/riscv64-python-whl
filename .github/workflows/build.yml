@@ -43,6 +43,8 @@ jobs:
       run: |
         git clone https://gitlab.kitware.com/cmake/cmake.git
         cd cmake
+        ./bootstrap
+        cmake -j 4
         python3 -m venv cmake-venv
         source cmake-venv/bin/activate
         pip install -r requirements-dev.txt

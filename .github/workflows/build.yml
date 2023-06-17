@@ -29,35 +29,61 @@ jobs:
 #        python3 setup.py bdist_wheel
 
 #    - name: Defines the numpy version from the whl file
-#      run: echo "::set-output name=version::$( basename $(ls numpy/dist/*.whl) )"
+#      run: echo "::set-output name=numpy_version::$( basename $(ls numpy/dist/*.whl) )"
 #      id: numpy_version
 
 #    - name: Uploads numpy whl package
 #      uses: actions/upload-artifact@v3
 #      with:
-#        name: ${{ steps.numpy_version.outputs.version }}
+#        name: ${{ steps.numpy_version.outputs.numpy_version }}
 #        path: numpy/dist/*.whl
 #        retention-days: 5
 
     - name: Building cmake
       run: |
-        git clone https://gitlab.kitware.com/cmake/cmake.git
-        cd cmake
-        ./bootstrap
-        cmake
+        git clone https://github.com/scikit-build/cmake-python-distributions.git
+        cd cmake-python-distributions/
         python3 -m venv cmake-venv
         source cmake-venv/bin/activate
         pip install -r requirements-dev.txt
         python setup.py bdist_wheel -j 4
-        find ..
 
-# Build ninja
-# git clone https://github.com/ninja-build/ninja.git
-# cd ninja
-# ./configure.py --bootstrap
-# cmake -Bbuild-cmake
-# cmake --build build-cmake
-# python3 setup.py bdist_wheel
+
+    - name: Defines the cmake version from the whl file
+      run: echo "::set-output name=cmake_version::$( basename $(ls cmake/dist/*.whl) )"
+      id: cmake_version
+
+    - name: Uploads cmake whl package
+      uses: actions/upload-artifact@v3
+      with:
+        name: ${{ steps.cmake_version.outputs.cmake_version }}
+        path: cmake/dist/*.whl
+        retention-days: 5
+
+# https://github.com/nedbat/coveragepy.git
+# cd coveragepy/
+# python3 -m venv coveragepy-build
+# source coveragepy-build/bin/activate
+
+    - name: Building ninja
+      run:
+        git clone https://github.com/scikit-build/ninja-python-distributions.git
+        cd ninja-python-distributions/
+        python3 -m venv ninja-build
+        source ninja-build/bin/activate
+        pip3 install -r requirements-dev.txt
+        python3 setup.py bdist_wheel -j 4
+
+    - name: Defines the ninja version from the whl file
+      run: echo "::set-output name=ninja_version::$( basename $(ls ninja-python-distributions/dist/*.whl) )"
+      id: ninja_version
+
+    - name: Uploads ninja whl package
+      uses: actions/upload-artifact@v3
+      with:
+        name: ${{ steps.ninja_version.outputs.ninja_version }}
+        path: ninja-python-distribution/dist/*.whl
+        retention-days: 5
 
 #    - name: Building pandas
 #      run: |
@@ -106,3 +132,12 @@ jobs:
 #        asset_name: ${{ steps.numpy_version.outputs.version }}
 #        asset_content_type: application/zip
 
+
+    - name: Run on failure
+        if: ${{ failure() }}
+        run: |
+          sudo dmesg
+          df -h
+          cat /sys/class/thermal/thermal_zone0/temp
+          cat /proc/loadavg
+          free -h

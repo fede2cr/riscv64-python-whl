@@ -46,7 +46,7 @@ jobs:
         python3 -m venv cmake-venv
         source cmake-venv/bin/activate
         pip install -r requirements-dev.txt
-        python setup.py bdist_wheel -j 3
+        python setup.py bdist_wheel
 
 
     - name: Defines the cmake version from the whl file

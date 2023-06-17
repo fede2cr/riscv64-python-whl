@@ -67,7 +67,7 @@ jobs:
 
 
     - name: Building ninja
-      run:
+      run: |
         git clone https://github.com/scikit-build/ninja-python-distributions.git
         cd ninja-python-distributions/
         python3 -m venv ninja-build

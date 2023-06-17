@@ -46,7 +46,7 @@ jobs:
         python3 -m venv cmake-venv
         source cmake-venv/bin/activate
         pip install -r requirements-dev.txt
-        python setup.py bdist_wheel -j 4
+        python setup.py bdist_wheel -j 3
 
 
     - name: Defines the cmake version from the whl file
@@ -64,6 +64,8 @@ jobs:
 # cd coveragepy/
 # python3 -m venv coveragepy-build
 # source coveragepy-build/bin/activate
+# pip3 install -r requirements/dev.pip
+
 
     - name: Building ninja
       run:

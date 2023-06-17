@@ -83,7 +83,7 @@ jobs:
       uses: actions/upload-artifact@v3
       with:
         name: ${{ steps.ninja_version.outputs.ninja_version }}
-        path: ninja-python-distribution/dist/*.whl
+        path: ninja-python-distributions/dist/*.whl
         retention-days: 5
 
 #    - name: Building pandas

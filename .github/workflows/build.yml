@@ -134,10 +134,10 @@ jobs:
 
 
     - name: Run on failure
-        if: ${{ failure() }}
-        run: |
-          sudo dmesg
-          df -h
-          cat /sys/class/thermal/thermal_zone0/temp
-          cat /proc/loadavg
-          free -h
+      if: ${{ failure() }}
+      run: |
+        sudo dmesg
+        df -h
+        cat /sys/class/thermal/thermal_zone0/temp
+        cat /proc/loadavg
+        free -h

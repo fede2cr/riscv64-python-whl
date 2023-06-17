@@ -29,13 +29,13 @@ jobs:
         python3 setup.py bdist_wheel
 
     - name: Defines the numpy version from the whl file
-      run: echo "::set-output name=numpy_version::$( basename $(ls numpy/dist/*.whl) )"
+      run: echo "::set-output name=version::$( basename $(ls numpy/dist/*.whl) )"
       id: numpy_version
 
     - name: Uploads numpy whl package
       uses: actions/upload-artifact@v3
       with:
-        name: ${{ steps.numpy_version.outputs.numpy_version }}
+        name: ${{ steps.numpy_version.outputs.version }}
         path: numpy/dist/*.whl
         retention-days: 5
 
@@ -77,13 +77,13 @@ jobs:
         python3 setup.py bdist_wheel -j 4
 
     - name: Defines the ninja version from the whl file
-      run: echo "::set-output name=ninja_version::$( basename $(ls ninja-python-distributions/dist/*.whl) )"
+      run: echo "::set-output name=version::$( basename $(ls ninja-python-distributions/dist/*.whl) )"
       id: ninja_version
 
     - name: Uploads ninja whl package
       uses: actions/upload-artifact@v3
       with:
-        name: ${{ steps.ninja_version.outputs.ninja_version }}
+        name: ${{ steps.ninja_version.outputs.version }}
         path: ninja-python-distributions/dist/*.whl
         retention-days: 5
 
@@ -106,7 +106,7 @@ jobs:
       run: echo "::set-output name=week::$( date +%s )" # TODO, during dev
       id: week
 
-    - name: release
+    - name: Creates a release
       uses: actions/create-release@v1
       id: create_release
       with:
@@ -136,7 +136,7 @@ jobs:
     - name: Download ninja artifact
       uses: actions/download-artifact@v2
       with:
-        name: ${{ steps.ninja_version.outputs.ninja_version }}
+        name: ${{ steps.ninja_version.outputs.version }}
 
     - name: Upload ninja artifact
       uses: actions/upload-release-asset@v1
@@ -147,7 +147,6 @@ jobs:
         asset_path: ./${{ steps.ninja_version.outputs.version }}
         asset_name: ${{ steps.ninja_version.outputs.version }}
         asset_content_type: application/zip
-
 
     - name: Run on failure
       if: ${{ failure() }}

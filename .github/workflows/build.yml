@@ -16,29 +16,30 @@ jobs:
         DEBIAN_FRONTEND=noninteractive sudo apt-get -qy update
         DEBIAN_FRONTEND=noninteractive sudo apt-get -qy install python3-pip python3-setuptools python3-wheel python3.11-venv
 
-#    - name: Building numpy
-#      run: |
-#        DEBIAN_FRONTEND=noninteractive sudo apt-get -qy install libopenblas0 libopenblas-dev gfortran
-#        python3 -m venv numpy-venv
-#        source numpy-venv/bin/activate
-#        git clone https://github.com/numpy/numpy.git # TODO, submodule
-#        cd numpy
-#        git submodule update --init
-#        pip install -r test_requirements.txt
-#        CCACHE_DIR=/mnt/ccache PATH=/usr/lib/ccache:$PATH python3 setup.py build -j 4
-#        python3 setup.py bdist_wheel
+    - name: Building numpy
+      run: |
+        DEBIAN_FRONTEND=noninteractive sudo apt-get -qy install libopenblas0 libopenblas-dev gfortran
+        python3 -m venv numpy-venv
+        source numpy-venv/bin/activate
+        git clone https://github.com/numpy/numpy.git # TODO, submodule
+        cd numpy
+        git submodule update --init
+        pip install -r test_requirements.txt
+        CCACHE_DIR=/mnt/ccache PATH=/usr/lib/ccache:$PATH python3 setup.py build -j 4
+        python3 setup.py bdist_wheel
 
-#    - name: Defines the numpy version from the whl file
-#      run: echo "::set-output name=numpy_version::$( basename $(ls numpy/dist/*.whl) )"
-#      id: numpy_version
+    - name: Defines the numpy version from the whl file
+      run: echo "::set-output name=numpy_version::$( basename $(ls numpy/dist/*.whl) )"
+      id: numpy_version
 
-#    - name: Uploads numpy whl package
-#      uses: actions/upload-artifact@v3
-#      with:
-#        name: ${{ steps.numpy_version.outputs.numpy_version }}
-#        path: numpy/dist/*.whl
-#        retention-days: 5
+    - name: Uploads numpy whl package
+      uses: actions/upload-artifact@v3
+      with:
+        name: ${{ steps.numpy_version.outputs.numpy_version }}
+        path: numpy/dist/*.whl
+        retention-days: 5
 
+# Disabling: https://github.com/scikit-build/cmake-python-distributions/issues/325
 #    - name: Building cmake
 #      run: |
 #        git clone https://github.com/scikit-build/cmake-python-distributions.git
@@ -100,38 +101,52 @@ jobs:
 #        find ..
 
 
-# Disable during dev
-#    - name: Grab the week of year and the year for use in release version
-#      #run: echo "::set-output name=version::$( date +%Y%V )"
-#      run: echo "::set-output name=week::$( date +%s )" # TODO, during dev
-#      id: week
+    - name: Grab the week of year and the year for use in release version
+      #run: echo "::set-output name=version::$( date +%Y%V )"
+      run: echo "::set-output name=week::$( date +%s )" # TODO, during dev
+      id: week
 
-#    - name: release
-#      uses: actions/create-release@v1
-#      id: create_release
-#      with:
-#        draft: false
-#        prerelease: false
-#        release_name: Weekly build ${{ steps.week.outputs.week }}
-#        tag_name: 0.${{ steps.week.outputs.week }}
-#        #body_path: CHANGELOG.md
-#      env:
-#        GITHUB_TOKEN: ${{ github.token }}
+    - name: release
+      uses: actions/create-release@v1
+      id: create_release
+      with:
+        draft: false
+        prerelease: false
+        release_name: Weekly build ${{ steps.week.outputs.week }}
+        tag_name: 0.${{ steps.week.outputs.week }}
+        #body_path: CHANGELOG.md
+      env:
+        GITHUB_TOKEN: ${{ github.token }}
 
-#    - name: Download numpy artifact
-#      uses: actions/download-artifact@v2
-#      with:
-#        name: ${{ steps.numpy_version.outputs.version }}
+    - name: Download numpy artifact
+      uses: actions/download-artifact@v2
+      with:
+        name: ${{ steps.numpy_version.outputs.version }}
 
-#    - name: Upload numpy artifact
-#      uses: actions/upload-release-asset@v1
-#      env:
-#        GITHUB_TOKEN: ${{ github.token }}
-#      with:
-#        upload_url: ${{ steps.create_release.outputs.upload_url }}
-#        asset_path: ./${{ steps.numpy_version.outputs.version }}
-#        asset_name: ${{ steps.numpy_version.outputs.version }}
-#        asset_content_type: application/zip
+    - name: Upload numpy artifact
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ github.token }}
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }}
+        asset_path: ./${{ steps.numpy_version.outputs.version }}
+        asset_name: ${{ steps.numpy_version.outputs.version }}
+        asset_content_type: application/zip
+
+    - name: Download ninja artifact
+      uses: actions/download-artifact@v2
+      with:
+        name: ${{ steps.ninja_version.outputs.ninja_version }}
+
+    - name: Upload ninja artifact
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ github.token }}
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }}
+        asset_path: ./${{ steps.ninja_version.outputs.version }}
+        asset_name: ${{ steps.ninja_version.outputs.version }}
+        asset_content_type: application/zip
 
 
     - name: Run on failure

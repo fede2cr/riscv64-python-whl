@@ -39,26 +39,25 @@ jobs:
 #        path: numpy/dist/*.whl
 #        retention-days: 5
 
-    - name: Building cmake
-      run: |
-        git clone https://github.com/scikit-build/cmake-python-distributions.git
-        cd cmake-python-distributions/
-        python3 -m venv cmake-venv
-        source cmake-venv/bin/activate
-        pip install -r requirements-dev.txt
-        python setup.py bdist_wheel
+#    - name: Building cmake
+#      run: |
+#        git clone https://github.com/scikit-build/cmake-python-distributions.git
+#        cd cmake-python-distributions/
+#        python3 -m venv cmake-venv
+#        source cmake-venv/bin/activate
+#        pip install -r requirements-dev.txt
+#        python setup.py bdist_wheel
 
+#    - name: Defines the cmake version from the whl file
+#      run: echo "::set-output name=cmake_version::$( basename $(ls cmake/dist/*.whl) )"
+#      id: cmake_version
 
-    - name: Defines the cmake version from the whl file
-      run: echo "::set-output name=cmake_version::$( basename $(ls cmake/dist/*.whl) )"
-      id: cmake_version
-
-    - name: Uploads cmake whl package
-      uses: actions/upload-artifact@v3
-      with:
-        name: ${{ steps.cmake_version.outputs.cmake_version }}
-        path: cmake/dist/*.whl
-        retention-days: 5
+#    - name: Uploads cmake whl package
+#      uses: actions/upload-artifact@v3
+#      with:
+#        name: ${{ steps.cmake_version.outputs.cmake_version }}
+#        path: cmake/dist/*.whl
+#        retention-days: 5
 
 # https://github.com/nedbat/coveragepy.git
 # cd coveragepy/

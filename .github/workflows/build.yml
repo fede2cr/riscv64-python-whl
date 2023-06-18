@@ -87,19 +87,20 @@ jobs:
         path: ninja-python-distributions/dist/*.whl
         retention-days: 5
 
-    - name: Building pandas
-      run: |
-        git clone https://github.com/pandas-dev/pandas.git # TODO, submodule
-        cd pandas
-        DEBIAN_FRONTEND=noninteractive sudo apt-get -qy install cmake libssl-dev
-        python3 -m venv pandas-venv
-        source pandas-venv/bin/activate
-        pip3 install cython
-        pip3 install https://github.com/fede2cr/riscv64-python-whl/releases/download/0.1686914859/numpy-1.25.0rc1+197.g410f7cc64-cp311-cp311-linux_riscv64.whl
-        pip3 install https://github.com/fede2cr/riscv64-python-whl/releases/download/0.1687022578/ninja-0.0.0-cp311-cp311-linux_riscv64.whl
-        pip3 install -r requirements-dev.txt 
-        python3 setup.py bdist_wheel -j 4
-        find . -name *.whl
+# Tries to build cmake.
+#    - name: Building pandas
+#      run: |
+#        git clone https://github.com/pandas-dev/pandas.git # TODO, submodule
+#        cd pandas
+#        DEBIAN_FRONTEND=noninteractive sudo apt-get -qy install cmake libssl-dev
+#        python3 -m venv pandas-venv
+#        source pandas-venv/bin/activate
+#        pip3 install cython
+#        pip3 install https://github.com/fede2cr/riscv64-python-whl/releases/download/0.1686914859/numpy-1.25.0rc1+197.g410f7cc64-cp311-cp311-linux_riscv64.whl
+#        pip3 install https://github.com/fede2cr/riscv64-python-whl/releases/download/0.1687022578/ninja-0.0.0-cp311-cp311-linux_riscv64.whl
+#        pip3 install -r requirements-dev.txt 
+#        python3 setup.py bdist_wheel -j 4
+#        find . -name *.whl
 
 
     - name: Grab the week of year and the year for use in release version

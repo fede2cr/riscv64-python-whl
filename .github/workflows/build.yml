@@ -14,7 +14,7 @@ jobs:
     - name: Install Remaining Prerequisites
       run: |
         DEBIAN_FRONTEND=noninteractive apt-get -qy update
-        DEBIAN_FRONTEND=noninteractive apt-get -qy install python3-pip python3-setuptools python3-wheel python3.11-venv
+        DEBIAN_FRONTEND=noninteractive apt-get -qy install ninja-build python3-pip python3-setuptools python3-wheel python3.11-venv
 
     - name: Building numpy
       run: |

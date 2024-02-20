@@ -24,9 +24,7 @@ jobs:
         git clone https://github.com/numpy/numpy.git # TODO, submodule
         cd numpy
         git submodule update --init
-        pip install -r test_requirements.txt
-        CCACHE_DIR=/mnt/ccache PATH=/usr/lib/ccache:$PATH python3 setup.py build -j 4
-        python3 setup.py bdist_wheel
+        pip install . 
 
     - name: Defines the numpy version from the whl file
       run: echo "::set-output name=version::$( basename $(ls numpy/dist/*.whl) )"

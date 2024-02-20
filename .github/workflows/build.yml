@@ -14,29 +14,29 @@ jobs:
     - name: Install Remaining Prerequisites
       run: |
         DEBIAN_FRONTEND=noninteractive apt-get -qy update
-        DEBIAN_FRONTEND=noninteractive apt-get -qy install ninja-build python3-pip python3-setuptools python3-wheel python3.11-venv
+        DEBIAN_FRONTEND=noninteractive apt-get -qy install python3-pip python3-setuptools python3-wheel python3.11-venv
 
-    - name: Building numpy
-      run: |
-        DEBIAN_FRONTEND=noninteractive apt-get -qy install libopenblas0 libopenblas-dev gfortran
-        python3 -m venv numpy-venv
-        source numpy-venv/bin/activate
-        pip install --upgrade pip
-        git clone https://github.com/numpy/numpy.git # TODO, submodule
-        cd numpy
-        git submodule update --init
-        pip install . 
+#    - name: Building numpy
+#      run: |
+#        DEBIAN_FRONTEND=noninteractive apt-get -qy install libopenblas0 libopenblas-dev gfortran
+#        python3 -m venv numpy-venv
+#        source numpy-venv/bin/activate
+#        pip install --upgrade pip
+#        git clone https://github.com/numpy/numpy.git # TODO, submodule
+#        cd numpy
+#        git submodule update --init
+#        pip install . 
 
-    - name: Defines the numpy version from the whl file
-      run: echo "::set-output name=version::$( basename $(ls numpy/dist/*.whl) )"
-      id: numpy_version
+#    - name: Defines the numpy version from the whl file
+#      run: echo "::set-output name=version::$( basename $(ls numpy/dist/*.whl) )"
+#      id: numpy_version
 
-    - name: Uploads numpy whl package
-      uses: actions/upload-artifact@v3
-      with:
-        name: ${{ steps.numpy_version.outputs.version }}
-        path: numpy/dist/*.whl
-        retention-days: 5
+#    - name: Uploads numpy whl package
+#      uses: actions/upload-artifact@v3
+#      with:
+#        name: ${{ steps.numpy_version.outputs.version }}
+#        path: numpy/dist/*.whl
+#        retention-days: 5
 
 # Disabling: https://github.com/scikit-build/cmake-python-distributions/issues/325
 #    - name: Building cmake
@@ -152,7 +152,7 @@ jobs:
     - name: Run on failure
       if: ${{ failure() }}
       run: |
-        sudo dmesg
+        dmesg
         df -h
         cat /sys/class/thermal/thermal_zone0/temp
         cat /proc/loadavg

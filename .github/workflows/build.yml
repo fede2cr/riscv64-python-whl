@@ -21,6 +21,7 @@ jobs:
         DEBIAN_FRONTEND=noninteractive apt-get -qy install libopenblas0 libopenblas-dev gfortran
         python3 -m venv numpy-venv
         source numpy-venv/bin/activate
+        pip install --upgrade pip
         git clone https://github.com/numpy/numpy.git # TODO, submodule
         cd numpy
         git submodule update --init

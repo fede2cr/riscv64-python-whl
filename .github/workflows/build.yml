@@ -36,7 +36,7 @@ jobs:
       with:
         name: ${{ steps.numpy_version.outputs.version }}
         #path: numpy/dist/*.whl
-        path: *.whl
+        path: ./*.whl
         retention-days: 5
 
 #        gmake[2]: *** [CMakeFiles/CMakeProject-build.dir/build.make:126: CMakeProject-build-prefix/src/CMakeProject-build-stamp/CMakeProject-build-run_cmake_test_suite] Error 8

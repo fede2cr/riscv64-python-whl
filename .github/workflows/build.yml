@@ -14,39 +14,50 @@ jobs:
     - name: Install Remaining Prerequisites
       run: |
         DEBIAN_FRONTEND=noninteractive apt-get -qy update
-        DEBIAN_FRONTEND=noninteractive apt-get -qy install python3-pip python3-setuptools python3-wheel python3.11-venv
+        DEBIAN_FRONTEND=noninteractive apt-get -qy install libssl-dev git cmake patchelf python3-pip python3-setuptools python3-wheel python3.11-dev python3.11-venv
 
-#    - name: Building numpy
-#      run: |
-#        DEBIAN_FRONTEND=noninteractive apt-get -qy install libopenblas0 libopenblas-dev gfortran
-#        python3 -m venv numpy-venv
-#        source numpy-venv/bin/activate
-#        pip install --upgrade pip
-#        git clone https://github.com/numpy/numpy.git # TODO, submodule
-#        cd numpy
-#        git submodule update --init
-#        pip install . 
+    - name: Building numpy
+      run: |
+        DEBIAN_FRONTEND=noninteractive apt-get -qy install libopenblas0 libopenblas-dev gfortran
+        python3.11 -m venv numpy-venv
+        source numpy-venv/bin/activate
+        pip install --upgrade pip
+        git clone https://github.com/numpy/numpy.git # TODO, submodule
+        cd numpy
+        git submodule update --init
+        MAKEFLAGS="-j$(nproc)" pip install . 
 
-#    - name: Defines the numpy version from the whl file
-#      run: echo "::set-output name=version::$( basename $(ls numpy/dist/*.whl) )"
-#      id: numpy_version
+    - name: Defines the numpy version from the whl file
+      run: echo "::set-output name=version::$( basename $(ls numpy/dist/*.whl) )"
+      id: numpy_version
 
-#    - name: Uploads numpy whl package
-#      uses: actions/upload-artifact@v3
-#      with:
-#        name: ${{ steps.numpy_version.outputs.version }}
-#        path: numpy/dist/*.whl
-#        retention-days: 5
+    - name: Uploads numpy whl package
+      uses: actions/upload-artifact@v3
+      with:
+        name: ${{ steps.numpy_version.outputs.version }}
+        path: numpy/dist/*.whl
+        retention-days: 5
 
-# Disabling: https://github.com/scikit-build/cmake-python-distributions/issues/325
+#        gmake[2]: *** [CMakeFiles/CMakeProject-build.dir/build.make:126: CMakeProject-build-prefix/src/CMakeProject-build-stamp/CMakeProject-build-run_cmake_test_suite] Error 8
+#|       gmake[1]: *** [CMakeFiles/Makefile2:113: CMakeFiles/CMakeProject-build.dir/all] Error 2
+#|       gmake: *** [Makefile:136: all] Error 2
+#|       Traceback (most recent call last):
+#|         File "/tmp/pip-build-env-nslp7cj8/overlay/lib/python3.11/site-packages/skbuild/setuptools_wrap.py", line 674, in setup
+#|           cmkr.make(make_args, install_target=cmake_install_target, env=env)
+#|         File "/tmp/pip-build-env-nslp7cj8/overlay/lib/python3.11/site-packages/skbuild/cmaker.py", line 697, in make
+#|           self.make_impl(clargs=clargs, config=config, source_dir=source_dir, install_target=install_target, env=env)
+#|         File "/tmp/pip-build-env-nslp7cj8/overlay/lib/python3.11/site-packages/skbuild/cmaker.py", line 742, in make_impl
+#|           raise SKBuildError(msg)
+
 #    - name: Building cmake
 #      run: |
+#        DEBIAN_FRONTEND=noninteractive apt-get -qy install file
 #        git clone https://github.com/scikit-build/cmake-python-distributions.git
 #        cd cmake-python-distributions/
-#        python3 -m venv cmake-venv
+#        python3.11 -m venv cmake-venv
 #        source cmake-venv/bin/activate
-#        pip install -r requirements-dev.txt
-#        python setup.py bdist_wheel
+#        pip install --upgrade pip
+#        #MAKEFLAGS="-j$(nproc)" pip install . 
 
 #    - name: Defines the cmake version from the whl file
 #      run: echo "::set-output name=cmake_version::$( basename $(ls cmake/dist/*.whl) )"
@@ -70,36 +81,36 @@ jobs:
       run: |
         git clone https://github.com/scikit-build/ninja-python-distributions.git
         cd ninja-python-distributions/
-        python3 -m venv ninja-build
+        python3.11 -m venv ninja-build
         source ninja-build/bin/activate
+        pip install --upgrade pip
         pip3 install -r requirements-dev.txt
-        python3 setup.py bdist_wheel -j 4
+        python3 setup.py bdist_wheel -j $(nproc)
 
     - name: Defines the ninja version from the whl file
       run: echo "::set-output name=version::$( basename $(ls ninja-python-distributions/dist/*.whl) )"
       id: ninja_version
 
-    - name: Uploads ninja whl package
-      uses: actions/upload-artifact@v3
-      with:
-        name: ${{ steps.ninja_version.outputs.version }}
-        path: ninja-python-distributions/dist/*.whl
-        retention-days: 5
+   - name: Uploads ninja whl package
+     uses: actions/upload-artifact@v3
+     with:
+       name: ${{ steps.ninja_version.outputs.version }}
+       path: ninja-python-distributions/dist/*.whl
+       retention-days: 5
 
-# Tries to build cmake.
-#    - name: Building pandas
-#      run: |
-#        git clone https://github.com/pandas-dev/pandas.git # TODO, submodule
-#        cd pandas
-#        DEBIAN_FRONTEND=noninteractive sudo apt-get -qy install cmake libssl-dev
-#        python3 -m venv pandas-venv
-#        source pandas-venv/bin/activate
-#        pip3 install cython
-#        pip3 install https://github.com/fede2cr/riscv64-python-whl/releases/download/0.1686914859/numpy-1.25.0rc1+197.g410f7cc64-cp311-cp311-linux_riscv64.whl
-#        pip3 install https://github.com/fede2cr/riscv64-python-whl/releases/download/0.1687022578/ninja-0.0.0-cp311-cp311-linux_riscv64.whl
-#        pip3 install -r requirements-dev.txt 
-#        python3 setup.py bdist_wheel -j 4
-#        find . -name *.whl
+    - name: Building pandas
+      run: |
+        git clone https://github.com/pandas-dev/pandas.git # TODO, submodule
+        cd pandas
+        DEBIAN_FRONTEND=noninteractive apt-get -qy install cmake libssl-dev patchelf python3-pyqt5 qt5-qmake
+        python3.11 -m venv pandas-venv
+        source pandas-venv/bin/activate
+        pip3 install --upgrade pip
+        pip3 install cython
+        pip3 install https://github.com/fede2cr/riscv64-python-whl/releases/download/0.1686914859/numpy-1.25.0rc1+197.g410f7cc64-cp311-cp311-linux_riscv64.whl
+        pip3 install https://github.com/fede2cr/riscv64-python-whl/releases/download/0.1687022578/ninja-0.0.0-cp311-cp311-linux_riscv64.whl
+        MAKEFLAGS="-j$(nproc)" pip3 install . 
+        find . -name *.whl
 
 
     - name: Grab the week of year and the year for use in release version

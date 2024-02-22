@@ -113,14 +113,14 @@ jobs:
         MAKEFLAGS="-j$(nproc)" pip3 wheel . 
 
     - name: Defines the pandas version from the whl file
-      run: echo "::set-output name=version::$( basename $(ls pandas/*.whl) )"
+      run: echo "::set-output name=version::$( basename $(ls pandas/pandas*.whl) )"
       id: pandas_version
 
     - name: Uploads pandas whl package
       uses: actions/upload-artifact@v3
       with:
         name: ${{ steps.pandas_version.outputs.version }}
-        path: pandas/*.whl
+        path: pandas/pandas*.whl
         retention-days: 5
 
 

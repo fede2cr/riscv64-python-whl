@@ -91,12 +91,12 @@ jobs:
       run: echo "::set-output name=version::$( basename $(ls ninja-python-distributions/dist/*.whl) )"
       id: ninja_version
 
-   - name: Uploads ninja whl package
-     uses: actions/upload-artifact@v3
-     with:
-       name: ${{ steps.ninja_version.outputs.version }}
-       path: ninja-python-distributions/dist/*.whl
-       retention-days: 5
+    - name: Uploads ninja whl package
+      uses: actions/upload-artifact@v3
+      with:
+        name: ${{ steps.ninja_version.outputs.version }}
+        path: ninja-python-distributions/dist/*.whl
+        retention-days: 5
 
     - name: Building pandas
       run: |

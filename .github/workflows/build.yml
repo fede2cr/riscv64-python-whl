@@ -25,7 +25,8 @@ jobs:
         git clone https://github.com/numpy/numpy.git # TODO, submodule
         cd numpy
         git submodule update --init
-        MAKEFLAGS="-j$(nproc)" pip install . 
+        #MAKEFLAGS="-j$(nproc)" pip install . 
+        MAKEFLAGS="-j$(nproc)" pip wheel . 
         find /tmp -name numpy\*.whl
         find . -name numpy\*.whl
 

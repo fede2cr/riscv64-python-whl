@@ -26,6 +26,8 @@ jobs:
         cd numpy
         git submodule update --init
         MAKEFLAGS="-j$(nproc)" pip install . 
+        find /tmp -name numpy\*.whl
+        find . -name numpy\*.whl
 
     - name: Defines the numpy version from the whl file
       run: echo "::set-output name=version::$( basename $(ls numpy/dist/*.whl) )"

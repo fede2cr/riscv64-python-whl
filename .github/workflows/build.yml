@@ -26,11 +26,8 @@ jobs:
         cd numpy
         git submodule update --init
         MAKEFLAGS="-j$(nproc)" pip wheel . 
-        find . -name *.whl
-        find /tmp -name *.whl
 
     - name: Defines the numpy version from the whl file
-      #run: echo "::set-output name=version::$( basename $(ls numpy/dist/*.whl) )"
       run: echo "::set-output name=version::$( basename $(ls numpy/*.whl) )"
       id: numpy_version
 
@@ -113,8 +110,18 @@ jobs:
         pip3 install cython
         pip3 install https://github.com/fede2cr/riscv64-python-whl/releases/download/0.1686914859/numpy-1.25.0rc1+197.g410f7cc64-cp311-cp311-linux_riscv64.whl
         pip3 install https://github.com/fede2cr/riscv64-python-whl/releases/download/0.1687022578/ninja-0.0.0-cp311-cp311-linux_riscv64.whl
-        MAKEFLAGS="-j$(nproc)" pip3 install . 
-        find . -name *.whl
+        MAKEFLAGS="-j$(nproc)" pip3 wheel . 
+
+    - name: Defines the pandas version from the whl file
+      run: echo "::set-output name=version::$( basename $(ls pandas/*.whl) )"
+      id: pandas_version
+
+    - name: Uploads pandas whl package
+      uses: actions/upload-artifact@v3
+      with:
+        name: ${{ steps.pandas_version.outputs.version }}
+        path: pandas/*.whl
+        retention-days: 5
 
 
     - name: Grab the week of year and the year for use in release version
@@ -164,10 +171,24 @@ jobs:
         asset_name: ${{ steps.ninja_version.outputs.version }}
         asset_content_type: application/zip
 
+    - name: Download pandas artifact
+      uses: actions/download-artifact@v2
+      with:
+        name: ${{ steps.pandas_version.outputs.version }}
+
+    - name: Upload pandas artifact
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ github.token }}
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }}
+        asset_path: ./${{ steps.pandas_version.outputs.version }}
+        asset_name: ${{ steps.pandas_version.outputs.version }}
+        asset_content_type: application/zip
+
     - name: Run on failure
       if: ${{ failure() }}
       run: |
-        dmesg
         df -h
         cat /sys/class/thermal/thermal_zone0/temp
         cat /proc/loadavg

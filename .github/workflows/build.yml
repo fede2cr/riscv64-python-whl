@@ -13,12 +13,12 @@ jobs:
 
     - name: Install Remaining Prerequisites
       run: |
-        DEBIAN_FRONTEND=noninteractive sudo apt-get -qy update
-        DEBIAN_FRONTEND=noninteractive sudo apt-get -qy install g++ libssl-dev git cmake patchelf python3-pip python3-setuptools python3-wheel python3.10-dev python3.10-venv python3.11-dev python3.11-venv
+        DEBIAN_FRONTEND=noninteractive apt-get -qy update
+        DEBIAN_FRONTEND=noninteractive apt-get -qy install g++ libssl-dev git cmake patchelf python3-pip python3-setuptools python3-wheel python3.10-dev python3.10-venv python3.11-dev python3.11-venv
 
     - name: Building numpy
       run: |
-        DEBIAN_FRONTEND=noninteractive sudo apt-get -qy install libopenblas0 libopenblas-dev gfortran
+        DEBIAN_FRONTEND=noninteractive apt-get -qy install libopenblas0 libopenblas-dev gfortran
         #python3.11 -m venv numpy-venv
         python3.10 -m venv numpy-venv
         source numpy-venv/bin/activate

@@ -16,6 +16,24 @@ jobs:
         DEBIAN_FRONTEND=noninteractive apt-get -qy update
         DEBIAN_FRONTEND=noninteractive apt-get -qy install g++ libssl-dev git cmake patchelf python3-pip python3-setuptools python3-wheel python3.10-dev python3.10-venv python3.11-dev python3.11-venv
 
+    - name: Building webrtc-noise-gain
+      run: |
+        DEBIAN_FRONTEND=noninteractive apt-get -qy install podman git
+        git clone https://github.com/fede2cr/webrtc-noise-gain.git # TODO, submodule
+        cd webrtc-noise-gain
+        podman  build . -v $(pwd)/:/build  -f Dockerfile.riscv64
+
+    - name: Defines the webrtc-noise-gain version from the whl file
+      run: echo "::set-output name=version::$( basename $(ls webrtc-noise-gain/dist/*.whl) )"
+      id: webrtc-noise-gain_version
+
+    - name: Uploads webrtc-noise-gain whl package
+      uses: actions/upload-artifact@v3
+      with:
+        name: ${{ steps.webrtc-noise-gain_version.outputs.version }}
+        path: webrtc-noise-gain/dist/*.whl
+        retention-days: 5
+
     - name: Building numpy
       run: |
         DEBIAN_FRONTEND=noninteractive apt-get -qy install libopenblas0 libopenblas-dev gfortran
